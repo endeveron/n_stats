@@ -62,7 +62,7 @@ const SignInForm = () => {
           password: signinData.password,
         },
       });
-      console.log('statRes', statRes);
+
       if (!statRes.data) {
         toast('Unable to sign in. Please try later.');
         return;

@@ -391,7 +391,7 @@
   /* Tooltip */
 
   .tooltip {
-    @apply opacity-0 absolute bottom-full left-1/2 -translate-x-1/2 mb-2 p-3 text-xs whitespace-nowrap bg-popover rounded-md shadow-xs dark:shadow-none transition-opacity pointer-events-none;
+    @apply opacity-0 absolute bottom-full left-1/2 -translate-x-1/2 mb-2 p-3 text-inversed-foreground text-xs whitespace-nowrap bg-inversed-background rounded-md transition-opacity pointer-events-none;
   }
 
   .tooltip-parent:hover .tooltip {

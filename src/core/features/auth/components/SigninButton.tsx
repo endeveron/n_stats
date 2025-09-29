@@ -10,8 +10,6 @@ interface SignInButtonProps extends React.ComponentPropsWithRef<typeof Button> {
   title?: string;
 }
 
-const DEFAULT_TITLE = 'Sign In';
-
 const SignInButton = (props: SignInButtonProps) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -21,8 +19,6 @@ const SignInButton = (props: SignInButtonProps) => {
     router.push(SIGNIN_REDIRECT);
   };
 
-  const title = props?.title || DEFAULT_TITLE;
-
   return (
     <Button
       variant="accent"
@@ -30,9 +26,8 @@ const SignInButton = (props: SignInButtonProps) => {
       onClick={handleClick}
       loading={loading}
       {...props}
-      title={title}
     >
-      {title}
+      {props?.title || 'Sign In'}
     </Button>
   );
 };

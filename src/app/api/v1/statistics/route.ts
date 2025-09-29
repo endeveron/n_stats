@@ -1,24 +1,40 @@
 import { geolocation } from '@vercel/functions';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { UAParser } from 'ua-parser-js';
 
-import type { NextRequest } from 'next/server';
+// import type { NextRequest } from 'next/server';
 import { saveStatistics } from '@/core/features/statistics/actions';
 import { APIResponseData, APIResult } from '@/core/types';
 
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  });
+}
+
 export async function POST(
   request: NextRequest
-): Promise<
-  NextResponse<APIResult<APIResponseData & { referralCode?: string }>>
-> {
+): Promise<NextResponse<APIResult<APIResponseData>>> {
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+  };
+
   const body = await request.json();
   const { appId, email, password } = body;
 
   if (!email || !password) {
-    return NextResponse.json({
-      data: null,
-      error: 'Check credentials in request body',
-    });
+    return NextResponse.json(
+      {
+        data: null,
+        error: 'Check credentials in request body',
+      },
+      { headers: corsHeaders }
+    );
   }
 
   const noData = '—';
@@ -56,23 +72,32 @@ export async function POST(
       system,
     });
     if (res?.success) {
-      return NextResponse.json({
-        data: {
-          success: true,
-          message: 'Statistics saved in db',
+      return NextResponse.json(
+        {
+          data: {
+            success: true,
+            message: 'Statistics saved in db',
+          },
         },
-      });
+        { headers: corsHeaders }
+      );
     } else {
-      return NextResponse.json({
-        data: null,
-        error: `Unable to save statistics`,
-      });
+      return NextResponse.json(
+        {
+          data: null,
+          error: `Unable to save statistics`,
+        },
+        { headers: corsHeaders }
+      );
     }
   } catch (err: unknown) {
     console.error(`POST api/<v>/statistics ${err}`);
-    return NextResponse.json({
-      data: null,
-      error: `Unable to save statistics.`,
-    });
+    return NextResponse.json(
+      {
+        data: null,
+        error: `Unable to save statistics.`,
+      },
+      { headers: corsHeaders }
+    );
   }
 }

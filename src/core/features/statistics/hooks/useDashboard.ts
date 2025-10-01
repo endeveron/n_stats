@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { getStatistics } from '@/core/features/statistics/actions';
@@ -8,33 +9,39 @@ import { UserItem } from '@/core/features/auth/types';
 import { handleServerActionResult } from '@/core/utils';
 
 export function useDashboard({ email }: { email?: string | null }) {
-  const [fetchedUsers, setFetchedUsers] = useState<UserItem[]>([]);
+  const pathname = usePathname();
+
+  const [visitors, setVisitors] = useState<UserItem[]>([]);
+
+  const updateStatistics = useCallback(async () => {
+    try {
+      const res = await getStatistics({
+        recentItemsNumber: 8,
+        path: pathname,
+      });
+      const { data } = handleServerActionResult({
+        errMsg: 'Failed to recieve statistics from database',
+        fallbackData: [],
+        fileName: 'useDashboard',
+        res,
+      });
+
+      setVisitors(data);
+    } catch (error) {
+      console.error('[useDashboard] Error syncing user data:', error);
+      toast('Unable to retrieve data from database');
+    }
+  }, [pathname]);
 
   // Fetch and sync user data from database
   useEffect(() => {
     if (!email) return;
 
-    const syncStatistics = async () => {
-      try {
-        const res = await getStatistics(8);
-        const { data } = handleServerActionResult({
-          errMsg: 'Failed to recieve statistics from database',
-          fallbackData: [],
-          fileName: 'useDashboard',
-          res,
-        });
-
-        setFetchedUsers(data);
-      } catch (error) {
-        console.error('[useDashboard] Error syncing user data:', error);
-        toast('Unable to retrieve data from database');
-      }
-    };
-
-    syncStatistics();
-  }, [email]);
+    updateStatistics();
+  }, [email, updateStatistics]);
 
   return {
-    fetchedUsers,
+    visitors,
+    updateStatistics,
   };
 }

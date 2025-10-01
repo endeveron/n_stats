@@ -58,7 +58,7 @@
 
   --topbar: hsla(var(--hue), 10%, 100%);
   --title: hsl(var(--brand-hue), 100%, 45%);
-  --area: hsl(var(--hue), 10%, 92%); /* auth, sidebar */
+  --area: hsl(var(--hue), 10%, 97%); /* auth, sidebar */
   --muted: hsl(var(--hue), 10%, 50%);
   --border: hsl(var(--hue), 10%, 92%);
   --icon: hsl(var(--hue), 10%, 40%);
@@ -396,6 +396,11 @@
 
   .tooltip-parent:hover .tooltip {
     @apply opacity-100;
+  }
+
+  /* Button */
+  .button--sm {
+    @apply text-[10px]! font-bold uppercase;
   }
 }
 

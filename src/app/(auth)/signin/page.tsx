@@ -12,7 +12,6 @@ export const metadata: Metadata = {
 export default async function SigninPage() {
   return (
     <AnimatedCard>
-      {/* <CardLogo /> */}
       <CardTitle className="text-title">Sign In</CardTitle>
       <SignInForm />
     </AnimatedCard>

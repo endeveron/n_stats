@@ -48,7 +48,7 @@ const MainMenu = ({ userData, className }: MainMenuProps) => {
     );
 
   return (
-    <div className={cn('m-4 w-8 h-8 flex-center', className)}>
+    <div className={cn('w-8 h-8 flex-center', className)}>
       {signoutPending && (
         <div className="fixed z-40 inset-0 bg-background/90 flex flex-col items-center justify-center trans-c">
           <LoadingIcon />

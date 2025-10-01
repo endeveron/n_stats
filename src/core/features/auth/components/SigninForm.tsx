@@ -75,7 +75,6 @@ const SignInForm = () => {
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err: unknown) {
-      // toastError(err);
     } finally {
       setPending(false);
     }
@@ -130,9 +129,6 @@ const SignInForm = () => {
           >
             Sign in
           </Button>
-          {/* <Link href="/invite" scroll={false} className="auth-form_link">
-            Create an account
-          </Link> */}
         </form>
         <FormLoading loadigIconClassName="-mt-14" isPending={isPending} />
       </div>

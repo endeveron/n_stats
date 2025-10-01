@@ -19,17 +19,16 @@ export type StatisticsProps = {
   };
 };
 
-export type StatisticsDBItem = {
+export type StatisticsItem = {
   appId: string;
-  data: string;
   timestamp: number;
+};
+
+export type StatisticsDBItem = StatisticsItem & {
+  data: string;
 };
 
 export type Statistics = Omit<StatisticsProps, 'credentials'> & {
   password: string;
-};
-
-export type DecryptedStatistics = {
-  data: Statistics;
-  dateKey: string;
+  timestamp: number;
 };

@@ -1,15 +1,11 @@
 'use server';
 
-import { format } from 'date-fns';
+import { revalidatePath } from 'next/cache';
 
 import UserModel from '@/core/features/auth/models/user';
 import { UserItem } from '@/core/features/auth/types';
+import { RECENT_STATISTICS_NUMBER } from '@/core/features/statistics/constants';
 import {
-  ADMIN_DATE_FORMAT,
-  RECENT_STATISTICS_NUMBER,
-} from '@/core/features/statistics/constants';
-import {
-  DecryptedStatistics,
   Statistics,
   StatisticsDBItem,
   StatisticsProps,
@@ -84,10 +80,15 @@ export const saveStatistics = async ({
   }
 };
 
-export const getStatistics = async (
+export const getStatistics = async ({
   recentItemsNumber = RECENT_STATISTICS_NUMBER,
-  appId?: string
-): Promise<ServerActionResult<UserItem[]> | undefined> => {
+  appId,
+  path,
+}: {
+  recentItemsNumber: number;
+  appId?: string;
+  path?: string;
+}): Promise<ServerActionResult<UserItem[]> | undefined> => {
   const errMsg = 'Unable to receive statistics';
   try {
     await mongoDB.connect();
@@ -146,6 +147,9 @@ export const getStatistics = async (
       },
     ]);
 
+    // Update cache
+    if (path) revalidatePath(path);
+
     return {
       success: true,
       data: users,
@@ -158,7 +162,7 @@ export const getStatistics = async (
 export const decryptStatistics = async (
   email: string,
   recentItemsNumber = RECENT_STATISTICS_NUMBER
-): Promise<ServerActionResult<DecryptedStatistics[]> | undefined> => {
+): Promise<ServerActionResult<Statistics[]> | undefined> => {
   const errMsg = 'Unable to decrypt statistics';
 
   try {
@@ -195,16 +199,13 @@ export const decryptStatistics = async (
       };
     }
 
-    const decryptedStatistics: DecryptedStatistics[] = [];
+    const decryptedStatistics: Statistics[] = [];
 
     for (const { data: encryptedData, appId, timestamp } of statistics) {
       const data = decryptObject<Statistics>(encryptedData);
       data.appId = appId;
 
-      decryptedStatistics.push({
-        data,
-        dateKey: format(timestamp, ADMIN_DATE_FORMAT),
-      });
+      decryptedStatistics.push({ ...data, timestamp });
     }
 
     return {

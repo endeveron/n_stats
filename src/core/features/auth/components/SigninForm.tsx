@@ -25,7 +25,7 @@ import { SignInArgs } from '@/core/features/auth/types';
 import { useError } from '@/core/hooks/useError';
 import { cn } from '@/core/utils';
 import { toast } from 'sonner';
-import { handleStatistics } from '@/core/features/statistics/services';
+import { saveStatistics } from '@/core/features/statistics/services';
 import { APP_ID } from '@/core/constants';
 
 const SignInForm = () => {
@@ -55,7 +55,7 @@ const SignInForm = () => {
     try {
       setPending(true);
 
-      const statRes = await handleStatistics({
+      const statRes = await saveStatistics({
         appId: APP_ID,
         credentials: {
           email: signinData.email,

@@ -16,18 +16,3 @@ export default {
   },
   providers: [],
 } satisfies NextAuthConfig;
-
-// Session staleness configuration
-export const STALENESS_CONFIG = {
-  // Refresh if session expires within this time (5 minutes)
-  EXPIRY_THRESHOLD: 5 * 60 * 1000,
-
-  // Refresh if session is older than this (30 minutes)
-  MAX_AGE: 30 * 60 * 1000,
-
-  // Refresh if user was inactive and session might have changed
-  INACTIVITY_THRESHOLD: 10 * 60 * 1000, // 10 minutes
-
-  // Minimum time between forced refreshes
-  MIN_REFRESH_INTERVAL: 60 * 1000, // 1 minute
-};

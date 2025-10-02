@@ -178,3 +178,14 @@ export const handleServerActionResult = <T>({
 
   return { data: res.data };
 };
+
+/**
+ * Checks if a given string value is a numeric value.
+ * @param {string} value - a string, then attempts to parse it as a float.
+ * @returns a boolean value, which indicates whether the input value is numeric or not.
+ */
+export function isNumeric(value: string): boolean {
+  if (typeof value !== 'string') return false;
+  const num = parseFloat(value);
+  return !isNaN(num) && isFinite(num) && value.trim() !== '';
+}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { v4 as uuid } from 'uuid';
 
@@ -8,14 +8,17 @@ import { Button } from '@/core/components/ui/Button';
 import LoadingIcon from '@/core/components/ui/LoadingIcon';
 import { UserItem as TUserItem } from '@/core/features/auth/types';
 import { decryptStatistics } from '@/core/features/statistics/actions';
+import AppDate from '@/core/features/statistics/components/AppDate';
+import { ItemMode } from '@/core/features/statistics/components/DashboardClient';
 import StatisticsItemDecrypted from '@/core/features/statistics/components/StatisticsItemDecrypted';
 import { Statistics } from '@/core/features/statistics/types';
 import { handleServerActionResult } from '@/core/utils';
-import AppDate from '@/core/features/statistics/components/AppDate';
 
-type UserItemProps = TUserItem & {};
+type UserItemProps = TUserItem & {
+  forcedMode: ItemMode | null;
+};
 
-const UserItem = ({ email, statistics }: UserItemProps) => {
+const UserItem = ({ email, forcedMode, statistics }: UserItemProps) => {
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [decrypted, setDecrypted] = useState<Statistics[]>([]);
@@ -48,8 +51,14 @@ const UserItem = ({ email, statistics }: UserItemProps) => {
     }
   };
 
+  useEffect(() => {
+    if (forcedMode) {
+      setExpanded(forcedMode === 'expanded');
+    }
+  }, [forcedMode]);
+
   return (
-    <div className="w-full max-w-xl flex flex-col text-sm font-semibold rounded-2xl bg-area overflow-hidden trans-c shadow-xs">
+    <div className="w-full max-w-[550px] flex flex-col text-sm font-semibold rounded-2xl bg-area overflow-hidden trans-c shadow-xs">
       {/* Header */}
       <div className="min-h-8 relative flex justify-between cursor-pointer leading-none rounded-2xl bg-card">
         <div
@@ -86,7 +95,7 @@ const UserItem = ({ email, statistics }: UserItemProps) => {
           {isDecrypted && decrypted.length ? (
             <div className="flex flex-col gap-4 text-xs font-bold">
               {decrypted.map((data) => (
-                <StatisticsItemDecrypted {...data} key={uuid()} />
+                <StatisticsItemDecrypted email={email} {...data} key={uuid()} />
               ))}
             </div>
           ) : (

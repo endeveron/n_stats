@@ -2,7 +2,7 @@ import { API_URL } from '@/core/constants';
 import { Credentials } from '@/core/features/auth/types';
 import { APIResult } from '@/core/types';
 
-export const handleStatistics = async ({
+export const saveStatistics = async ({
   appId,
   credentials,
 }: {
@@ -10,7 +10,6 @@ export const handleStatistics = async ({
   credentials: Credentials;
 }): Promise<APIResult<boolean>> => {
   try {
-    // GET /api/<version>/statistics
     const response = await fetch(`${API_URL}/statistics`, {
       method: 'POST',
       body: JSON.stringify({

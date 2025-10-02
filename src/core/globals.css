@@ -180,14 +180,10 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-.fade-circle {
-  mask: radial-gradient(
-    circle,
-    black 25%,
-    rgba(0, 0, 0, 0.1) 50%,
-    rgba(0, 0, 0, 0) 60%,
-    transparent 100%
-  );
+html,
+body {
+  color: var(--foreground);
+  background: var(--background);
 }
 
 @layer base {
@@ -197,7 +193,7 @@
 
   html,
   body {
-    @apply h-full font-sans text-foreground bg-background transition-colors duration-300;
+    @apply h-full font-sans transition-colors duration-300;
   }
 
   .flex-center {

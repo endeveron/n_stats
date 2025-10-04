@@ -15,6 +15,36 @@ import { mongoDB } from '@/core/lib/mongo';
 import { ServerActionResult } from '@/core/types';
 import { handleActionError } from '@/core/utils/error';
 import { configureUser } from '@/core/utils/user';
+import { NOTIFICATIONS_WEBHOOK } from '@/core/constants';
+import { appCodeMap } from '@/core/features/statistics/data';
+
+export const sendNotification = async (
+  appId: string,
+  text: string
+): Promise<{ success: boolean }> => {
+  const errMsg = 'Unable to send notification';
+  const appCode = appCodeMap.get(appId)?.appCode;
+  const title = appCode ? `[${appCode}] ` : '';
+
+  try {
+    const response = await fetch(NOTIFICATIONS_WEBHOOK, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text: `${title}${text}` }),
+    });
+    const res = await response.json();
+    if (res?.status !== 200) {
+      console.error(errMsg);
+      return { success: false };
+    }
+    return { success: true };
+  } catch (err: unknown) {
+    console.error(err);
+    return { success: false };
+  }
+};
 
 /**
  * Creates a new user in a database and returns the user's object ID.
@@ -72,10 +102,15 @@ export const saveStatistics = async ({
     user.statistics.push(statisticsDBItem);
     await user.save();
 
+    // Send notification
+
+    await sendNotification(appId, 'New visitor');
+
     return {
       success: true,
     };
   } catch (err: unknown) {
+    await sendNotification(appId, errMsg);
     return handleActionError(errMsg, err);
   }
 };

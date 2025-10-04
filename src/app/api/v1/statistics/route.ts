@@ -2,7 +2,6 @@ import { geolocation } from '@vercel/functions';
 import { NextRequest, NextResponse } from 'next/server';
 import { UAParser } from 'ua-parser-js';
 
-// import type { NextRequest } from 'next/server';
 import { saveStatistics } from '@/core/features/statistics/actions';
 import { APIResponseData, APIResult } from '@/core/types';
 
@@ -25,13 +24,14 @@ export async function POST(
   };
 
   const body = await request.json();
-  const { appId, email, password } = body;
+  const { appId, email, password, token } = body;
+  const errMsg = 'Unable to save statistics';
 
-  if (!email || !password) {
+  if (!appId || !email || !password || !token) {
     return NextResponse.json(
       {
         data: null,
-        error: 'Check credentials in request body',
+        error: `${errMsg}. Invalid request body`,
       },
       { headers: corsHeaders }
     );
@@ -85,7 +85,7 @@ export async function POST(
       return NextResponse.json(
         {
           data: null,
-          error: `Unable to save statistics`,
+          error: errMsg,
         },
         { headers: corsHeaders }
       );
@@ -95,7 +95,7 @@ export async function POST(
     return NextResponse.json(
       {
         data: null,
-        error: `Unable to save statistics.`,
+        error: errMsg,
       },
       { headers: corsHeaders }
     );

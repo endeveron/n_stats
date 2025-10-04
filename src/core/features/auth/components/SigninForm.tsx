@@ -24,9 +24,6 @@ import { SignInSchema, signInSchema } from '@/core/features/auth/schemas';
 import { SignInArgs } from '@/core/features/auth/types';
 import { useError } from '@/core/hooks/useError';
 import { cn } from '@/core/utils';
-import { toast } from 'sonner';
-import { saveStatistics } from '@/core/features/statistics/services';
-import { APP_ID } from '@/core/constants';
 
 const SignInForm = () => {
   const searchParams = useSearchParams();
@@ -54,19 +51,6 @@ const SignInForm = () => {
 
     try {
       setPending(true);
-
-      const statRes = await saveStatistics({
-        appId: APP_ID,
-        credentials: {
-          email: signinData.email,
-          password: signinData.password,
-        },
-      });
-
-      if (!statRes.data) {
-        toast('Unable to sign in. Please try later.');
-        return;
-      }
 
       const signinRes = await signIn(signinData);
       if (!signinRes?.success) {
